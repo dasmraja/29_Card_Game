@@ -1514,8 +1514,11 @@
           const wanted = cleanName(m.name);
           if (this.started) {
             // a player who dropped out can take their seat back by using the same name
-            const idx = wanted ? this.seats.findIndex((e) => e && !e.me && e.human && !e.conn && e.name.toLowerCase() === wanted.toLowerCase()) : -1;
+            const idx = wanted ? this.seats.findIndex((e) => e && !e.me && e.human && e.name.toLowerCase() === wanted.toLowerCase()) : -1;
             if (idx < 0) return conn.send({ t: 'reject', reason: 'That game has already started. To rejoin, use the same name you played with.' });
+            // the old connection may still look alive if their browser vanished without closing it
+            const old = this.seats[idx].conn;
+            if (old && old !== conn) { this.conns.delete(old); old._gone = null; try { old.close(); } catch (err) { /* ignore */ } }
             this.seats[idx].conn = conn;
             this.conns.add(conn);
             conn.send({ t: 'welcome', slot: idx, name: this.seats[idx].name, started: true });
