@@ -1,0 +1,10 @@
+{
+  "name": "29-card-game",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The 29 card game in the browser: play the computer or friends online.",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "license": "MIT"
+}
